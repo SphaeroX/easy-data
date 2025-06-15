@@ -1,0 +1,5 @@
+openai>=1.0
+influxdb_client>=1.39
+matplotlib>=3.7
+pandas>=2.0
+swarm>=0.0.2

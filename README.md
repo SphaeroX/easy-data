@@ -1,42 +1,42 @@
-EasyData bietet eine durchgehende Lösung, mit der Sie natürliche Sprachbefehle verwenden, um Sensordaten aus InfluxDB oder einem MCP Server auszulesen, diese mithilfe des OpenAI-Frameworks Swarm orchestrieren und anschließend durch den OpenAI Code Interpreter automatisiert als Bilddatei visualisieren lassen([github.com][1], [platform.openai.com][2], [docs.influxdata.com][3], [github.com][4], [akira.ai][5], [stackoverflow.com][6], [datacamp.com][7], [github.com][8], [medium.com][9], [community.openai.com][10]).
+EasyData provides a streamlined solution that lets you issue natural language commands to retrieve sensor data from InfluxDB or an MCP server. The OpenAI Swarm framework orchestrates multiple agents to gather and clean the data, and the OpenAI Code Interpreter automatically generates a chart that is saved locally.
 
-## Projektüberblick
+## Project Overview
 
-EasyData verbindet drei Bausteine:
+EasyData combines three building blocks:
 
-* Swarm koordiniert mehrere spezialisierte Agenten, die jeweils Datenabruf, Datenaufbereitung und Visualisierung übernehmen([akira.ai][5], [github.com][11], [community.openai.com][10]).
-* Der Code Interpreter der OpenAI-Plattform führt Python-Code sicher aus und erstellt Diagramme als PNG oder SVG, die ohne weitere Nachbearbeitung heruntergeladen werden können([platform.openai.com][2], [datacamp.com][7]).
-* InfluxDB oder ein kompatibler MCP Server stellt Echtzeit-Zeitreihendaten bereit und erlaubt über die Python-Clientbibliothek einen performanten Zugriff([docs.influxdata.com][3], [influxdata.com][12], [github.com][4], [influxdb-python.readthedocs.io][13]).
+* **Swarm** coordinates specialized agents responsible for data retrieval, preprocessing, and visualization.
+* The **OpenAI Code Interpreter** safely runs Python code and creates diagrams as PNG or SVG without manual postprocessing.
+* **InfluxDB** or a compatible MCP server stores real-time time series data and is accessed via the Python client library.
 
-## Zielsetzung
+## Goals
 
-* Sprachgesteuerte Abfragen für alle gängigen Sensortypen
-* Automatisierte Diagrammerstellung ohne manuelle Zwischenschritte
-* Erweiterbare Multi Agent-Architektur für weitere Datenquellen oder Ausgabeformate
+* Natural language queries for common sensor types
+* Automated chart creation without manual steps
+* Extensible multi-agent architecture for additional data sources or output formats
 
-## Architektur
+## Architecture
 
-### Datenfluss
+### Data Flow
 
-1. Der Nutzer formuliert eine Abfrage wie „zeige mir die letzten drei Stunden den CO2 Sensor und Temperatursensor im Vergleich“.
-2. Ein Retrieval-Agent ruft die gewünschten Messreihen aus InfluxDB ab.
-3. Ein Analyse-Agent prüft Zeitfenster, Datentyp und Einheit.
-4. Der Visualisierungs-Agent erzeugt Python-Code, den der Code Interpreter ausführt, speichert das Diagramm mittels `plt.savefig()` und gibt den Dateilink zurück([stackoverflow.com][6], [geeksforgeeks.org][14]).
+1. A user issues a query such as "show me the last three hours of the CO2 sensor and temperature sensor".
+2. A retrieval agent fetches the corresponding time series from InfluxDB.
+3. An analysis agent validates the time window, data type, and unit.
+4. The visualization agent generates Python code, which the Code Interpreter executes, saving the chart with `plt.savefig()` and returning the file path.
 
-### Hauptkomponenten
+### Main Components
 
-* **Swarm Agents**: jeweils zuständig für Datenabruf, Validierung, Visualisierung.
-* **OpenAI Assistants API**: verwaltet Thread-Kontext und Werkzeuge.
-* **InfluxDB 2.x**: Time-Series Datenbank mit Flux Query-Sprache.
-* **MCP Server**: Brücke für Sensornetzwerke ohne direkte Datenbankanbindung([github.com][4], [medium.com][9]).
+* **Swarm agents** handle retrieval, validation, and visualization tasks.
+* **OpenAI Assistants API** manages thread context and tools.
+* **InfluxDB 2.x** is the time-series database using the Flux query language.
+* **MCP server** bridges sensor networks that lack direct database access.
 
 ## Installation
 
-### Voraussetzungen
+### Prerequisites
 
 * Python 3.11
-* Zugriffsschlüssel für die OpenAI-API
-* Laufende InfluxDB Instanz oder MCP Server
+* Access token for the OpenAI API
+* Running InfluxDB instance or MCP server
 
 ### Setup
 
@@ -45,10 +45,10 @@ git clone https://github.com/your-org/easydata
 cd easydata
 python -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt   # enthält openai, influxdb_client, matplotlib, pandas
+pip install -r requirements.txt   # includes openai, influxdb_client, matplotlib, pandas, swarm
 ```
 
-## Beispielworkflow
+## Example Workflow
 
 ```example
 """Python script executed by the Code Interpreter
@@ -81,15 +81,14 @@ plt.savefig("easydata_output.png", dpi=300)
 """
 ```
 
-Der Interpreter liefert nach Ausführung die Datei `easydata_output.png`, die direkt im Chat heruntergeladen werden kann.
+The interpreter returns `easydata_output.png`, which can be downloaded directly from the chat.
 
-## Sicherheit und Datenschutz
+## Security and Privacy
 
-* Abfragen enthalten nur Metadaten und werden nach Abschluss der Session nicht persistiert.
-* Zugriffstoken für InfluxDB werden im Speicher der Session gehalten und nach Beenden des Prozesses verworfen.
-* Sensordaten bleiben in der eigenen Infrastruktur und werden nur für Lesezugriffe verwendet.
+* Queries only contain metadata and are not persisted after the session ends.
+* InfluxDB access tokens are kept in memory during the session and discarded when the process exits.
+* Sensor data stays in your infrastructure and is used only for read access.
 
+## License
 
-## Lizenz
-
-EasyData steht unter der Apache-2.0-Lizenz.
+EasyData is licensed under the Apache-2.0 License.
