@@ -12,6 +12,7 @@ EasyData combines three building blocks:
 
 * Natural language queries for common sensor types
 * Automated chart creation without manual steps
+* Dynamic visualization types powered by the OpenAI API
 * Extensible multi-agent architecture for additional data sources or output formats
 
 ## Architecture
@@ -47,6 +48,22 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt   # includes openai, influxdb_client, matplotlib, pandas, swarm
 ```
+## Configuration
+
+Copy `configs/.env.example` to `.env` and provide the InfluxDB URL, token, organization and bucket name before running EasyData. Set `OPENAI_API_KEY` to enable dynamic chart creation via the OpenAI API.
+
+### Command Line Usage
+
+```
+python -m easydata <flux-query> --chart line --title "My Chart" --output plot.png
+```
+
+Use the `--prompt` option to supply natural language instructions for dynamic chart creation:
+
+```
+python -m easydata <flux-query> --prompt "Create a pie chart of the latest values" --output latest.png
+```
+
 
 ## Example Workflow
 
